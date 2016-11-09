@@ -12,7 +12,7 @@ Please make sure you have set your application information using ```QApplication
 ### In C++:
 ```
 GAnalytics tracker("UA-my-id");
-tracker.sendAppView("Main Screen");
+tracker.sendScreenView("Main Screen");
 ```
 
 ### In QtQuick:
@@ -24,11 +24,11 @@ Tracker {
 }
 
 [...]
-tracker.sendAppView("Main Screen")
+tracker.sendScreenView("Main Screen")
 ```
 
 There is also an example application in the examples folder.
 
 ## License
-Copyright (c) 2014-2015, University of Applied Sciences Augsburg.
+Copyright (c) 2014-2016, University of Applied Sciences Augsburg.
 All rights reserved. Distributed under the terms and conditions of the BSD License. See separate LICENSE.txt.

@@ -247,9 +247,11 @@ QString GAnalytics::Private::getSystemInfo()
     case QSysInfo::MV_10_11:
         os = "Macintosh; Mac OS 10.11";
         break;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
     case QSysInfo::MV_10_12:
         os = "Macintosh; Mac OS 10.12";
         break;
+#endif
     case QSysInfo::MV_Unknown:
         os = "Macintosh; Mac OS unknown";
         break;
@@ -289,6 +291,20 @@ QString GAnalytics::Private::getSystemInfo()
     case QSysInfo::MV_IOS_9_0:
         os = "iPhone; iOS 9.0";
         break;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 8, 0))
+    case QSysInfo::MV_IOS_9_1:
+        os = "iPhone; iOS 9.1";
+        break;
+    case QSysInfo::MV_IOS_9_2:
+        os = "iPhone; iOS 9.2";
+        break;
+    case QSysInfo::MV_IOS_9_3:
+        os = "iPhone; iOS 9.3";
+        break;
+    case QSysInfo::MV_IOS_10_0:
+        os = "iPhone; iOS 10.0";
+        break;
+#endif
     case QSysInfo::MV_IOS:
         os = "iPhone; iOS unknown";
         break;
@@ -675,15 +691,12 @@ void GAnalytics::sendAppView(const QString &screenName,
  * @param screenName
  */
 void GAnalytics::sendScreenView(const QString &screenName,
-                             const QVariantMap &customValues)
+                                const QVariantMap &customValues)
 {
     d->logMessage(Info, QString("ScreenView: %1").arg(screenName));
 
     QUrlQuery query = d->buildStandardPostQuery("screenview");
-    if (! screenName.isEmpty())
-    {
-        query.addQueryItem("cd", screenName);
-    }
+    query.addQueryItem("cd", screenName);
     query.addQueryItem("an", d->appName);
     query.addQueryItem("av", d->appVersion);
     appendCustomValues(query, customValues);
@@ -707,11 +720,8 @@ void GAnalytics::sendEvent(const QString &category, const QString &action,
     QUrlQuery query = d->buildStandardPostQuery("event");
     query.addQueryItem("an", d->appName);
     query.addQueryItem("av", d->appVersion);
-
-    if (! category.isEmpty())
-        query.addQueryItem("ec", category);
-    if (! action.isEmpty())
-        query.addQueryItem("ea", action);
+    query.addQueryItem("ec", category);
+    query.addQueryItem("ea", action);
     if (! label.isEmpty())
         query.addQueryItem("el", label);
     if (value.isValid())
@@ -734,6 +744,9 @@ void GAnalytics::sendException(const QString &exceptionDescription,
                                const QVariantMap &customValues)
 {
     QUrlQuery query = d->buildStandardPostQuery("exception");
+    query.addQueryItem("an", d->appName);
+    query.addQueryItem("av", d->appVersion);
+
     query.addQueryItem("exd", exceptionDescription);
 
     if (exceptionFatal)
@@ -756,10 +769,9 @@ void GAnalytics::sendException(const QString &exceptionDescription,
  */
 void GAnalytics::startSession()
 {
-    QUrlQuery query = d->buildStandardPostQuery("event");
-    query.addQueryItem("sc", "start");
-
-    d->enqueQueryWithCurrentTime(query);
+	QVariantMap customValues;
+	customValues.insert("sc", "start");
+	sendEvent("Session", "Start", QString(), QVariant(), customValues);
 }
 
 /**
@@ -769,10 +781,9 @@ void GAnalytics::startSession()
  */
 void GAnalytics::endSession()
 {
-    QUrlQuery query = d->buildStandardPostQuery("event");
-    query.addQueryItem("sc", "end");
-
-    d->enqueQueryWithCurrentTime(query);
+	QVariantMap customValues;
+	customValues.insert("sc", "end");
+	sendEvent("Session", "End", QString(), QVariant(), customValues);
 }
 
 /**
