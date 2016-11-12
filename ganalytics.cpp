@@ -108,9 +108,10 @@ GAnalytics::Private::Private(GAnalytics *parent)
     clientID = getClientID();
     userID = getUserID();
     language = QLocale::system().name().toLower().replace("_", "-");
-#ifdef QT_GUI_LIB
-    screenResolution = getScreenResolution();
-#endif // QT_GUI_LIB
+    QGuiApplication* guiApp = dynamic_cast<QGuiApplication*>(QCoreApplication::instance());
+    if(guiApp != nullptr) {
+        screenResolution = getScreenResolution();
+    }
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/x-www-form-urlencoded");
     appName = QCoreApplication::instance()->applicationName();
     appVersion = QCoreApplication::instance()->applicationVersion();
@@ -172,10 +173,15 @@ QUrlQuery GAnalytics::Private::buildStandardPostQuery(const QString &type)
  */
 QString GAnalytics::Private::getScreenResolution()
 {
-    QScreen *screen = QGuiApplication::primaryScreen();
-    QSize size = screen->size();
+    QGuiApplication* guiApp = dynamic_cast<QGuiApplication*>(QCoreApplication::instance());
+    if(guiApp != nullptr) {
+        QScreen *screen = QGuiApplication::primaryScreen();
+        QSize size = screen->size();
 
-    return QString("%1x%2").arg(size.width()).arg(size.height());
+        return QString("%1x%2").arg(size.width()).arg(size.height());
+    } else {
+        return QString("0x0");
+    }
 }
 #endif // QT_GUI_LIB
 
