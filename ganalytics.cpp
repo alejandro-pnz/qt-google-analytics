@@ -789,11 +789,15 @@ void GAnalytics::startSession()
  * Query is setup in this method and stored in the message
  * queue.
  */
-void GAnalytics::endSession()
+void GAnalytics::endSession(bool immediately)
 {
 	QVariantMap customValues;
 	customValues.insert("sc", "end");
 	sendEvent("Session", "End", QString(), QVariant(), customValues);
+    if(immediately)
+    {
+        d->postMessage();
+    }
 }
 
 /**
