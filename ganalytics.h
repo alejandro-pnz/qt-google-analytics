@@ -83,7 +83,7 @@ public slots:
                        bool exceptionFatal = true,
                        const QVariantMap &customValues = QVariantMap());
     void startSession();
-    void endSession();
+    void endSession(bool immediately = false);
 
 
 signals:
