@@ -1,4 +1,5 @@
 #include "ganalytics.h"
+#include "qreplytimeout.h"
 
 #include <QCoreApplication>
 #include <QDataStream>
@@ -853,6 +854,7 @@ void GAnalytics::Private::postMessage()
     }
 
     QNetworkReply *reply = networkManager->post(request, ba);
+    new QReplyTimeout(reply, 5000);
     connect(reply, SIGNAL(finished()), this, SLOT(postMessageFinished()));
 }
 

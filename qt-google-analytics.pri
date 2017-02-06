@@ -1,3 +1,5 @@
 INCLUDEPATH += $$PWD
-HEADERS += $$PWD/ganalytics.h
-SOURCES += $$PWD/ganalytics.cpp
+HEADERS += $$PWD/ganalytics.h   \
+            $$PWD/qreplytimeout.h
+SOURCES += $$PWD/ganalytics.cpp   \
+            $$PWD/qreplytimeout.cpp
