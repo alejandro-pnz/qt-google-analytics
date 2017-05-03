@@ -885,7 +885,10 @@ void GAnalytics::Private::postMessageFinished()
         logMessage(GAnalytics::Debug, "Message sent");
     }
 
-    messageQueue.dequeue();
+    if(!messageQueue.isEmpty())
+    {
+        messageQueue.dequeue();
+    }
     emit postNextMessage();
     reply->deleteLater();
 }
